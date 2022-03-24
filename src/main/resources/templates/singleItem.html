@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Items Page</title>
+</head>
+<body>
+<div th:include="fragments/main-frangment::login"></div>
+
+<div>
+    <a href="/items/add">Add Item</a>
+    <div style="width: 205px;float: left">
+        <img th:if="${item.itemImages ==null || item.itemImages.isEmpty()}" src="/img.png" width="100px" height="100px">
+        <ul th:if="${item.itemImages!=null && !item.itemImages.isEmpty()}">
+            <li th:each="image: ${item.itemImages}">
+                <img th:src="@{/getImage/(pictureName=${image.name})}" width="100px" height="100px">
+            </li>
+        </ul>
+
+    </div>
+    <div>
+        <span th:text="${item.title}"></span><span th:text="${item.price}"></span>
+    </div>
+    User info:
+    <div>
+        <span th:text="${item.user.name+' '+item.user.surname}"> </span><span th:text="${item.user.phone}"></span>
+    </div>
+    Category:
+    <div>
+        <span th:each="category:${item.categories}" th:text="${category.name+' '}"></span>
+    </div>
+</div>
+</body>
+</html>

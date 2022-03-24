@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Save Item</title>
+</head>
+<body>
+Save Item
+<div th:if="${errors!=null && !errors.isEmpty()}">
+    <ul>
+        <li style="color: red" th:each="error:${errors}" th:text="${error}">
+
+        </li>
+    </ul>
+</div>
+
+<form action="/items/add" method="post" enctype="multipart/form-data">
+    <input th:if="${item!=null}" type="hidden" th:value="${item.id}" name="id">
+    <input type="text" name="title" placeholder="title" th:value="${item==null}? '':${item.title}"><br>
+    <input type="number" name="price" placeholder="price" th:value="${item==null}? '':${item.price}"><br>
+    <textarea name="description" placeholder="description"
+              th:text="${item==null}? '':${item.description}"></textarea><br>
+    <input type="file" name="pictures" multiple><br>
+
+    Categories:
+    <select name="categories[]" multiple>
+        <option th:each="category:${categories}" th:text="${category.name}" th:value="${category.id}"></option>
+    </select><br>
+    <input type="submit" value="add">
+</form>
+
+
+</body>
+</html>

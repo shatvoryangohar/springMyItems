@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .pagination {
+        display: inline-block;
+    }
+
+    .pagination a {
+        color: black;
+        float: left;
+        padding: 5px 5px;
+        text-decoration: none;
+    }
+
+    .pagination a.active {
+        background-color: gray;
+        color: white;
+        border-radius: 2px;
+    }
+</style>
+<body>
+
+
+<a href="?lang=hy">Armenian</a>| <a href="?lang=ru">Russian</a> | <a href="?lang=en">English</a>
+<br><br>
+<div th:include="fragments/main-frangment::login"></div>
+
+<br><br>
+Users:
+<a href="/items" th:text="#{main.view.all.items}"></a>
+<a href="/addUser" th:text="#{main.add.user}">Add User</a>
+
+<table border="1">
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>surname</th>
+        <th>email</th>
+        <th>phone</th>
+        <th>items</th>
+        <th th:if="${user !=null}">action</th>
+    </tr>
+    <tr th:each="u:${userPage.content}">
+        <td th:text="${u.id}"></td>
+        <td th:text="${u.name}"></td>
+        <td th:text="${u.surname}"></td>
+        <td th:text="${u.email}"></td>
+        <td th:text="${u.phone}"></td>
+        <td><a th:href="@{'/items/byUser/'+${u.id}}">view user items</a></td>
+        <td th:if="${user!=null}"><a th:href="@{'/deleteUser/'+${u.id}}">delete</a> |<a th:href="@{'/editUser/'+${u.id}}">edit</a></td>
+    </tr>
+
+</table>
+<div th:if="${userPage.totalPages > 0}" class="pagination"
+     th:each="pageNumber : ${pageNumbers}">
+    <a th:href="@{/(size=${userPage.size}, page=${pageNumber - 1 })}"
+       th:text=${pageNumber}
+       th:class="${pageNumber==userPage.number + 1} ? active"></a>
+</div>
+</body>
+</html>
