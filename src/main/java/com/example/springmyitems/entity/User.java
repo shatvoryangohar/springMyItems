@@ -6,7 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.UUID;
+
 
 @Data
 @NoArgsConstructor
@@ -23,6 +26,10 @@ public class User {
     private String email;
     private String password;
     private String phone;
-@Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private Role role;
+    private String token;
+    private boolean active;
+    private LocalDateTime tokenCreatedDate;
+
 }

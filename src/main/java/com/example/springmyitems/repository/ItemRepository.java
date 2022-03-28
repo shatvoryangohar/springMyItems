@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Integer> {
 
-List<Item>findAllByUser(User user);
+    List<Item> findAllByUser(User user);
 }

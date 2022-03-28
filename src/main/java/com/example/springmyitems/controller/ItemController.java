@@ -85,7 +85,6 @@ public class ItemController {
     }
 
     @GetMapping("/items/{id}")
-
     public String singleItem(@PathVariable int id, ModelMap map) {
         map.addAttribute("item", itemService.findById(id));
         map.addAttribute("categories", categoryService.findAll());

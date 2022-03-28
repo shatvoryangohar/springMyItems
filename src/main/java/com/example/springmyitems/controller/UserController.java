@@ -6,20 +6,19 @@ import com.example.springmyitems.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.mail.MessagingException;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Controller
 public class UserController {
 
     private final UserService userService;
-private final MailService mailService;
+    private final MailService mailService;
+
     @GetMapping("/deleteUser/{id}")
     public String deleteUser(@PathVariable("id") int id) {
         userService.deleteById(id);
@@ -32,7 +31,7 @@ private final MailService mailService;
     }
 
     @PostMapping("/user/add")
-    public String addUser(@ModelAttribute User user, ModelMap map) {
+    public String addUser(@ModelAttribute User user, ModelMap map, Locale locale) throws MessagingException {
         List<String> errorMsg = new ArrayList<>();
 
         if (user.getName() == null || user.getName().equals("")) {
@@ -49,10 +48,37 @@ private final MailService mailService;
             map.addAttribute("errors", errorMsg);
             return "saveUser";
         }
+        user.setActive(false);
+        user.setToken(UUID.randomUUID().toString());
+        user.setTokenCreatedDate(LocalDateTime.now());
         userService.save(user);
-mailService.sendMail(user.getEmail(),"Welcome,"+user.getSurname(),"You have successfully register, "+user.getName());
+        mailService.sendHtmlEmail(user.getEmail(),
+                "Welcome," + user.getSurname(),
+user," http://localhost:8080/user/activate?token=" + user.getToken(),"verifyTemplate",locale);
 
         return "redirect:/";
+    }
+
+
+    @GetMapping("/user/activate")
+    public String activateUser(ModelMap map, @RequestParam String token) {
+
+        Optional<User> user = userService.findByToken(token);
+        if (!user.isPresent()) {
+            map.addAttribute("message", "User Does not exists");
+            return "activateUser";
+        }
+        User userFromDB = user.get();
+        if (userFromDB.isActive()) {
+            map.addAttribute("message", "User already active");
+            return "activateUser";
+        }
+        userFromDB.setActive(true);
+        userFromDB.setToken(null);
+        userFromDB.setTokenCreatedDate(null);
+        userService.save(userFromDB);
+        map.addAttribute("message", "User activated,please login");
+        return "activateUser";
     }
 
     @GetMapping("/editUser/{id}")
