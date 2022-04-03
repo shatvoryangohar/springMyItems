@@ -54,7 +54,6 @@ public class ItemController {
     }
 
     @GetMapping("/items/add")
-
     public String addItemPage(ModelMap map) {
         map.addAttribute("categories", categoryService.findAll());
         map.addAttribute("users", userService.findAll());

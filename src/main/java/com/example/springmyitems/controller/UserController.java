@@ -51,7 +51,7 @@ public class UserController {
         user.setActive(false);
         user.setToken(UUID.randomUUID().toString());
         user.setTokenCreatedDate(LocalDateTime.now());
-        userService.save(user);
+        userService.create(user);
         mailService.sendHtmlEmail(user.getEmail(),
                 "Welcome," + user.getSurname(),
 user," http://localhost:8080/user/activate?token=" + user.getToken(),"verifyTemplate",locale);
