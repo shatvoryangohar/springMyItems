@@ -3,6 +3,8 @@ package com.example.springmyitems.config;
 import com.example.springmyitems.entity.Role;
 import com.example.springmyitems.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +29,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/")
                 .and()
                 .authorizeRequests()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .antMatchers(HttpMethod.GET,"/img/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/").permitAll()
                 .antMatchers(HttpMethod.GET, "/addUser").permitAll()
                 .antMatchers(HttpMethod.GET, "/user/add").permitAll()
@@ -34,7 +38,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/user/activate").permitAll()
                 .antMatchers("/items/add").hasAnyAuthority(Role.USER.name(),Role.ADMIN.name())
                 .antMatchers("/deleteUser/{id}").hasAnyAuthority(Role.ADMIN.name())
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
     }
 
     @Override

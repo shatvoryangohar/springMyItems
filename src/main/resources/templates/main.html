@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <script src="/js/jquery-3.6.0.js"></script>
+
+    <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link href="/skitter/skitter.css" type="text/css" media="all" rel="stylesheet"/>
+    <script src="/skitter/jquery.easing.1.3.js"></script>
+    <script src="/skitter/jquery.skitter.min.js"></script>
 </head>
 <style>
     .pagination {
@@ -34,7 +42,45 @@ Users:
 <a href="/items" th:text="#{main.view.all.items}"></a>
 <a href="/addUser" th:text="#{main.add.user}">Add User</a>
 
-<table border="1">
+<div class="skitter skitter-large with-dots">
+    <ul>
+        <li>
+            <a href="#cut">
+                <img src="/img/POLLYhp.jpg" class="cut"/>
+            </a>
+            <div class="label_text">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    <a href="#see-more" class="btn btn-xs btn-warning">See more</a>
+                </p>
+            </div>
+        </li>
+        <li>
+            <a href="#swapBlocks">
+                <img src="/img/unnamed.jpg" class="swapBlocks"/>
+            </a>
+            <div class="label_text">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    <a href="#see-more" class="btn btn-xs btn-warning">See more</a>
+                </p>
+            </div>
+        </li>
+        <li>
+            <a href="#swapBarsBack">
+                <img src="/img/vladstudio-library-wallpaper-5919cd763df78cf5fa3d7e27.jpg" class="swapBarsBack"/>
+            </a>
+            <div class="label_text">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    <a href="#see-more" class="btn btn-xs btn-warning">See more</a>
+                </p>
+            </div>
+        </li>
+    </ul>
+</div>
+<table id="users" class="cell-border">
+    <thead>
     <tr>
         <th>id</th>
         <th>name</th>
@@ -44,6 +90,8 @@ Users:
         <th>items</th>
         <th th:if="${user !=null}">action</th>
     </tr>
+    </thead>
+    <tbody id="userTbody">
     <tr th:each="u:${userPage.content}">
         <td th:text="${u.id}"></td>
         <td th:text="${u.name}"></td>
@@ -51,9 +99,10 @@ Users:
         <td th:text="${u.email}"></td>
         <td th:text="${u.phone}"></td>
         <td><a th:href="@{'/items/byUser/'+${u.id}}">view user items</a></td>
-        <td th:if="${user!=null}"><a th:href="@{'/deleteUser/'+${u.id}}">delete</a> |<a th:href="@{'/editUser/'+${u.id}}">edit</a></td>
+        <td th:if="${user!=null}"><a th:href="@{'/deleteUser/'+${u.id}}">delete</a> |<a
+                th:href="@{'/editUser/'+${u.id}}">edit</a></td>
     </tr>
-
+    </tbody>
 </table>
 <div th:if="${userPage.totalPages > 0}" class="pagination"
      th:each="pageNumber : ${pageNumbers}">
@@ -61,5 +110,36 @@ Users:
        th:text=${pageNumber}
        th:class="${pageNumber==userPage.number + 1} ? active"></a>
 </div>
+<script>
+    $(document).ready(function () {
+
+        $('#users').DataTable({
+            "paging": false
+        });
+        $('.skitter-large').skitter();
+
+        setInterval(function () {
+            loadUserData();
+        }, 2000)
+
+        function loadUserData() {
+            $.ajax({
+                url: "http://localhost:8081/users/",
+                method: "GET"
+            }).done(function (value) {
+
+                $('#userTbody').html("")
+                $.each(value, function (index, element) {
+                    $("#userTbody").append("<tr>" +
+                        "<td>" + element.id + "</td>" +
+                        "<td>" + element.name + "</td>" +
+                        "<td>" + element.surname + "</td>" +
+                        "<td>" + element.email + "</td>"
+                        + "</tr>")
+                });
+            });
+        }
+    })
+</script>
 </body>
 </html>

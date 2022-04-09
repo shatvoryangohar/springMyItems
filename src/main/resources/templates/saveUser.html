@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Add User</title>
+    <script src="/js/jquery-3.6.0.js"></script>
 </head>
 <body>
 <div th:if="${errors !=null && !errors.isEmpty()}">
@@ -11,16 +12,60 @@
     </ul>
 
 </div>
+<div id="formValidateError" style="color: red">
 
+</div>
 Add User:
 <form action="/user/add" method="post">
     <input th:if="${user !=null}" type="hidden" th:value="${user.id}" name="id">
-    <input type="text" name="name" placeholder="name" th:value="${user == null} ? '' : ${user.name}"><br>
-    <input type="text" name="surname" placeholder="surname" th:value="${user==null}?'':${user.surname}"><br>
-    <input type="email" name="email" placeholder="email" th:value="${user==null}? '': ${user.email}"><br>
+    <input id="userName" type="text" name="name" placeholder="name" th:value="${user == null} ? '' : ${user.name}"><br>
+    <input id="surname" type="text" name="surname" placeholder="surname"
+           th:value="${user==null}?'':${user.surname}"><br>
+    <input id="email" type="email" name="email" placeholder="email" th:value="${user==null}? '': ${user.email}"><br>
     <input type="password" name="password" placeholder="password" th:value="${user==null}? '':${user.password}"><br>
     <input type="text" name="phone" placeholder="phone" th:value="${user==null}? '' : ${user.phone}"><br>
-    <input type="submit" value="save">
+    <input type="submit" value="save" id="userAddForm">
 </form>
+<script>
+    // document.addEventListener("DOMContentLoaded", function (event) {
+    //     let saveBtn = document.getElementById("userAddForm")
+    //     saveBtn.onclick = function (event) {
+    //         document.getElementById("formValidateError").innerHTML = "";
+    //         let userName = document.getElementById("userName");
+    //         if (userName.value == null || userName.value == '') {
+    //             event.preventDefault();
+    //             document.getElementById("formValidateError").innerHTML +=
+    //                 "<span>User name should not be null or empty</span><br>";
+    //         }
+    //         let surname = document.getElementById("surname");
+    //         if (surname.value == null || surname.value == '') {
+    //             event.preventDefault();
+    //             document.getElementById("formValidateError").innerHTML +=
+    //                 "<span>User surname should not be null or empty</span><br>";
+    //         }
+    //         let email = document.getElementById("email");
+    //         if (email.value == null || email.value == '') {
+    //         event.preventDefault();
+    //         document.getElementById("formValidateError").innerHTML+=
+    //             "<span>User email should not be null or empty</span><br>"
+    //         }
+    //     }
+    // });
+    $(document).ready(function (e) {
+        $('#userAddForm').on('click', function (event) {
+            let name = $("#userName").val();
+            if (name == null || name === '') {
+                event.preventDefault();
+                $("#formValidateError").html("<span>User name should not be null or empty</span><br>")
+            }
+            let surname = $("#surname").val();
+            if (surname == null || surname === '') {
+                event.preventDefault();
+                $("#formValidateError").html("<span>User surname should not be null or empty</span><br>")
+            }
+        })
+    });
+</script>
+
 </body>
 </html>
